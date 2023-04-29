@@ -8,6 +8,7 @@ from google_auth_oauthlib.flow import Flow
 from oauthlib.oauth2 import OAuth2Error
 
 from dotenv import load_dotenv
+from database import generate_and_store_api_key
 
 load_dotenv()
 
@@ -78,7 +79,10 @@ def callback(request: Request, code: str):
     except HttpError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-    return {"email": email}
+    # メールアドレスに対してAPI KEYを発行
+    api_key = generate_and_store_api_key(email)
+
+    return {"email": email, "api_key": api_key}
 
 
 if __name__ == "__main__":
